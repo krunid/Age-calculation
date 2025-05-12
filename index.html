@@ -1,0 +1,343 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>โปรแกรมคำนวณอายุ</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap');
+        body {
+            font-family: 'Prompt', sans-serif;
+            background-image: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgefz4P1QykBWLwD3ARxoKv2a0qLR43l5bYn8BuM8lrkxwe2Ic2IuXPZPApsuJFb69cYKxzesJ4xmvkOFcFXfOzU0I3vIsxa8OLyU1pXrSEa2Jhodr2CTK_wIIJpJtOnnnFCorKYOFAd0rw/s1600/Abstract+Flowers+Design+%25287%2529.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+        .calendar-icon {
+            color: #4f46e5;
+        }
+        .date-option.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            color: #1e3a8a;
+            font-size: 0.9rem;
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(79, 70, 229, 0.2);
+        }
+        .main-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .result-container {
+            background-color: rgba(238, 242, 255, 0.9);
+        }
+        .time-result {
+            background-color: rgba(224, 231, 255, 0.7);
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            margin-top: 0.75rem;
+            border: 1px dashed rgba(79, 70, 229, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container rounded-xl shadow-xl w-full max-w-md p-6 md:p-8">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-semibold text-indigo-700">โปรแกรมคำนวณอายุ</h1>
+            <p class="text-gray-600 mt-2">กรอกวันเดือนปีเกิดของคุณ</p>
+        </div>
+
+        <div class="space-y-4">
+            <div class="grid grid-cols-3 gap-4">
+                <div>
+                    <label for="day" class="block text-sm font-medium text-gray-700 mb-1">วัน</label>
+                    <select id="day" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                        <option value="">เลือกวัน</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="month" class="block text-sm font-medium text-gray-700 mb-1">เดือน</label>
+                    <select id="month" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                        <option value="">เลือกเดือน</option>
+                        <option value="1">มกราคม</option>
+                        <option value="2">กุมภาพันธ์</option>
+                        <option value="3">มีนาคม</option>
+                        <option value="4">เมษายน</option>
+                        <option value="5">พฤษภาคม</option>
+                        <option value="6">มิถุนายน</option>
+                        <option value="7">กรกฎาคม</option>
+                        <option value="8">สิงหาคม</option>
+                        <option value="9">กันยายน</option>
+                        <option value="10">ตุลาคม</option>
+                        <option value="11">พฤศจิกายน</option>
+                        <option value="12">ธันวาคม</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="year" class="block text-sm font-medium text-gray-700 mb-1">ปี พ.ศ.</label>
+                    <select id="year" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                        <option value="">เลือกปี</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">คำนวณอายุ ณ วันที่:</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="current-date-option" class="date-option active py-2 px-4 border border-indigo-500 rounded-md text-center transition-all duration-200 hover:bg-indigo-100">
+                        วันที่ปัจจุบัน
+                    </button>
+                    <button id="may16-option" class="date-option py-2 px-4 border border-indigo-500 rounded-md text-center transition-all duration-200 hover:bg-indigo-100">
+                        16 พฤษภาคม
+                    </button>
+                </div>
+            </div>
+
+            <button id="calculate" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-md transition duration-300 mt-4 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                คำนวณอายุ
+            </button>
+        </div>
+
+        <div id="result" class="mt-6 p-4 result-container rounded-lg hidden">
+            <h2 class="text-lg font-medium text-indigo-800 mb-2">ผลการคำนวณ</h2>
+            <div class="space-y-2 text-gray-700">
+                <p id="birthdate" class="border-b border-indigo-100 pb-2"></p>
+                <p id="calculation-date" class="border-b border-indigo-100 pb-2"></p>
+                <p id="age" class="pt-2 text-lg font-medium text-indigo-700"></p>
+                <div id="time-alive" class="time-result">
+                    <p class="text-sm font-medium text-indigo-800 mb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        เวลาที่เกิดมาทั้งหมด
+                    </p>
+                    <p id="hours-alive" class="text-indigo-600"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+            </svg>
+            <span>พัฒนาโดย ครูนิด ศิษย์หลวงพ่อเสือ :: โรงเรียนสำนักตักศิลา</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // เพิ่มตัวเลือกวัน
+            const daySelect = document.getElementById('day');
+            for (let i = 1; i <= 31; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                daySelect.appendChild(option);
+            }
+
+            // เพิ่มตัวเลือกปี (ย้อนหลัง 100 ปี)
+            const yearSelect = document.getElementById('year');
+            const currentYear = new Date().getFullYear() + 543; // แปลงเป็น พ.ศ.
+            for (let i = currentYear; i >= currentYear - 100; i--) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                yearSelect.appendChild(option);
+            }
+
+            // ตรวจสอบการเปลี่ยนแปลงเดือนเพื่อปรับจำนวนวัน
+            document.getElementById('month').addEventListener('change', adjustDays);
+            document.getElementById('year').addEventListener('change', adjustDays);
+
+            // ปุ่มคำนวณ
+            document.getElementById('calculate').addEventListener('click', calculateAge);
+            
+            // ตัวเลือกวันที่คำนวณ
+            const dateOptions = document.querySelectorAll('.date-option');
+            dateOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    dateOptions.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            document.getElementById('current-date-option').addEventListener('click', function() {
+                this.classList.add('active');
+                document.getElementById('may16-option').classList.remove('active');
+            });
+            
+            document.getElementById('may16-option').addEventListener('click', function() {
+                this.classList.add('active');
+                document.getElementById('current-date-option').classList.remove('active');
+            });
+        });
+
+        function adjustDays() {
+            const daySelect = document.getElementById('day');
+            const monthValue = parseInt(document.getElementById('month').value);
+            const yearValue = parseInt(document.getElementById('year').value);
+            
+            // เก็บค่าวันที่เลือกไว้
+            const selectedDay = daySelect.value;
+            
+            // ล้างตัวเลือกวันเดิม
+            while (daySelect.options.length > 1) {
+                daySelect.remove(1);
+            }
+            
+            // คำนวณจำนวนวันในเดือน
+            let daysInMonth = 31;
+            if (monthValue === 4 || monthValue === 6 || monthValue === 9 || monthValue === 11) {
+                daysInMonth = 30;
+            } else if (monthValue === 2) {
+                // ตรวจสอบปีอธิกสุรทิน (Leap Year)
+                // ปี พ.ศ. ต้องแปลงเป็น ค.ศ. ก่อน
+                const yearCE = yearValue - 543;
+                daysInMonth = ((yearCE % 4 === 0 && yearCE % 100 !== 0) || yearCE % 400 === 0) ? 29 : 28;
+            }
+            
+            // เพิ่มตัวเลือกวัน
+            for (let i = 1; i <= daysInMonth; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                daySelect.appendChild(option);
+            }
+            
+            // เลือกวันเดิมถ้าเป็นไปได้
+            if (selectedDay && selectedDay <= daysInMonth) {
+                daySelect.value = selectedDay;
+            }
+        }
+
+        function calculateAge() {
+            const day = parseInt(document.getElementById('day').value);
+            const month = parseInt(document.getElementById('month').value);
+            const year = parseInt(document.getElementById('year').value);
+            
+            // ตรวจสอบว่าได้เลือกข้อมูลครบหรือไม่
+            if (isNaN(day) || isNaN(month) || isNaN(year)) {
+                alert('กรุณาเลือกวัน เดือน และปีเกิดให้ครบถ้วน');
+                return;
+            }
+            
+            // แปลง พ.ศ. เป็น ค.ศ.
+            const birthYearCE = year - 543;
+            const birthDate = new Date(birthYearCE, month - 1, day);
+            
+            // ตรวจสอบว่าเลือกคำนวณวันที่ปัจจุบันหรือ 16 พฤษภาคม
+            let calculationDate;
+            let calculationDateText;
+            
+            if (document.getElementById('may16-option').classList.contains('active')) {
+                // คำนวณ ณ วันที่ 16 พฤษภาคม ของปีปัจจุบัน
+                const currentYear = new Date().getFullYear();
+                calculationDate = new Date(currentYear, 4, 16); // เดือนพฤษภาคม (index 4)
+                
+                const thaiDayOfWeek = getThaiDayOfWeek(calculationDate.getDay());
+                const thaiMonths = getThaiMonths();
+                
+                calculationDateText = `วัน${thaiDayOfWeek}ที่ 16 เดือน${thaiMonths[4]} พ.ศ. ${currentYear + 543}`;
+            } else {
+                // คำนวณ ณ วันที่ปัจจุบัน
+                calculationDate = new Date();
+                const currentDay = calculationDate.getDate();
+                const currentMonth = calculationDate.getMonth();
+                const currentYear = calculationDate.getFullYear() + 543; // แปลงเป็น พ.ศ.
+                
+                const thaiDayOfWeek = getThaiDayOfWeek(calculationDate.getDay());
+                const thaiMonths = getThaiMonths();
+                
+                calculationDateText = `วัน${thaiDayOfWeek}ที่ ${currentDay} เดือน${thaiMonths[currentMonth]} พ.ศ. ${currentYear}`;
+            }
+            
+            // คำนวณอายุ
+            let ageYears = calculationDate.getFullYear() - birthDate.getFullYear();
+            let ageMonths = calculationDate.getMonth() - birthDate.getMonth();
+            let ageDays = calculationDate.getDate() - birthDate.getDate();
+            
+            // ปรับค่าถ้าจำเป็น
+            if (ageDays < 0) {
+                ageMonths--;
+                // หาจำนวนวันในเดือนก่อนหน้า
+                const lastMonth = new Date(calculationDate.getFullYear(), calculationDate.getMonth(), 0);
+                ageDays += lastMonth.getDate();
+            }
+            
+            if (ageMonths < 0) {
+                ageYears--;
+                ageMonths += 12;
+            }
+            
+            // คำนวณเวลาที่เกิดมาเป็นชั่วโมง นาที วินาที
+            const timeDiff = calculationDate.getTime() - birthDate.getTime();
+            const secondsAlive = Math.floor(timeDiff / 1000);
+            const minutesAlive = Math.floor(secondsAlive / 60);
+            const hoursAlive = Math.floor(minutesAlive / 60);
+            
+            const remainingSeconds = secondsAlive % 60;
+            const remainingMinutes = minutesAlive % 60;
+            
+            // แสดงผล
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.remove('hidden');
+            
+            // แสดงวันเกิด
+            const thaiDayOfWeekBirth = getThaiDayOfWeek(birthDate.getDay());
+            const thaiMonths = getThaiMonths();
+            
+            document.getElementById('birthdate').textContent = 
+                `วันเกิด: วัน${thaiDayOfWeekBirth}ที่ ${day} เดือน${thaiMonths[month-1]} พ.ศ. ${year}`;
+            
+            // แสดงวันที่คำนวณ
+            document.getElementById('calculation-date').textContent = 
+                `วันที่คำนวณ: ${calculationDateText}`;
+            
+            // แสดงอายุ
+            document.getElementById('age').textContent = 
+                `อายุ: คุณอายุ ${ageYears} ปี ${ageMonths} เดือน ${ageDays} วัน`;
+                
+            // แสดงเวลาที่เกิดมาเป็นชั่วโมง นาที วินาที
+            document.getElementById('hours-alive').textContent = 
+                `คุณเกิดมาแล้ว ${hoursAlive.toLocaleString()} ชั่วโมง ${remainingMinutes} นาที ${remainingSeconds} วินาที`;
+        }
+        
+        // ฟังก์ชันสำหรับแปลงวันในสัปดาห์เป็นภาษาไทย
+        function getThaiDayOfWeek(dayIndex) {
+            const thaiDays = [
+                'อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'
+            ];
+            return thaiDays[dayIndex];
+        }
+        
+        // ฟังก์ชันสำหรับรายชื่อเดือนภาษาไทย
+        function getThaiMonths() {
+            return [
+                'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+                'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+            ];
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93ea8a22d1fb45c5',t:'MTc0NzA1OTQ0Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
